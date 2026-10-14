@@ -1,0 +1,15 @@
+{
+  "name": "ev-kart-and-chair",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Parametric 3D concept models: medium electric go-kart (chassis + aero body) and a fast electric off-road wheelchair with 29\" wheels and disc brakes.",
+  "scripts": {
+    "export": "node scripts/export.mjs",
+    "calc": "node scripts/calc.mjs",
+    "serve": "npx --yes http-server -p 8080 -c-1 ."
+  },
+  "dependencies": {
+    "three": "0.170.0"
+  }
+}

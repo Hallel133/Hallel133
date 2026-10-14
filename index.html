@@ -1,0 +1,388 @@
+<title>קארט וכיסא חשמליים</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700&family=Assistant:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: workshop bench — the 3D model owns the page, a narrow spec rail sits beside it (stacks under it on phones). */
+:root {
+  --bg: #e9edf1;
+  --panel: #f7f9fb;
+  --ink: #17212b;
+  --muted: #5b6875;
+  --line: #cfd7df;
+  --accent: #d9480f;
+  --accent-ink: #ffffff;
+  --scene: #dfe5eb;
+  --grid: #b7c2cc;
+  --grid-major: #93a1ae;
+  --font-display: 'Rubik', 'Assistant', system-ui, sans-serif;
+  --font-body: 'Assistant', 'Rubik', system-ui, sans-serif;
+  --font-data: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11161c; --panel: #171e26; --ink: #e6ebf0; --muted: #94a2b0; --line: #2a3541;
+    --accent: #ff7b3d; --accent-ink: #1a0d05; --scene: #151c24; --grid: #263240; --grid-major: #3a4858;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11161c; --panel: #171e26; --ink: #e6ebf0; --muted: #94a2b0; --line: #2a3541;
+  --accent: #ff7b3d; --accent-ink: #1a0d05; --scene: #151c24; --grid: #263240; --grid-major: #3a4858;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5;
+  direction: rtl;
+}
+.wrap {
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 16px 28px;
+  display: grid; gap: 16px; max-width: 1500px; margin-inline: auto;
+}
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(22px, 3vw, 30px); margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+.sub { color: var(--muted); margin: 2px 0 0; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; padding: 3px; background: var(--panel); }
+.seg button {
+  font: 600 15px var(--font-body); color: var(--muted); background: none; border: 0; border-radius: 7px;
+  padding: 7px 16px; cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.seg button:focus-visible, .views button:focus-visible, label.part:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+.bench { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: start; }
+@media (max-width: 900px) { .bench { grid-template-columns: minmax(0, 1fr); } }
+.stage {
+  position: relative; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--scene);
+  height: min(72vh, 760px); min-height: 360px;
+}
+@media (max-width: 900px) { .stage { height: 62vh; min-height: 340px; } }
+.stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.overlay { position: absolute; inset-inline: 12px; top: 10px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; pointer-events: none; }
+.dims { font: 500 12px var(--font-data); color: var(--muted); background: color-mix(in srgb, var(--panel) 85%, transparent); padding: 4px 8px; border-radius: 6px; direction: ltr; }
+.views { position: absolute; inset-inline: 12px; bottom: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+.views button {
+  font: 600 13px var(--font-body); color: var(--ink); background: color-mix(in srgb, var(--panel) 90%, transparent);
+  border: 1px solid var(--line); border-radius: 8px; padding: 5px 11px; cursor: pointer;
+}
+.views button:hover { border-color: var(--accent); }
+.rail { display: grid; gap: 16px; min-width: 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; min-width: 0; }
+.card h2 { font: 700 13px var(--font-display); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 0 0 10px; }
+.parts { display: grid; gap: 2px; }
+label.part { display: flex; align-items: center; gap: 10px; padding: 5px 4px; border-radius: 6px; cursor: pointer; }
+label.part:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+label.part input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
+.sw { width: 12px; height: 12px; border-radius: 3px; flex: none; border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent); }
+.ref { color: var(--muted); font-size: 12px; margin-inline-start: auto; }
+.opt { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.opt input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
+dl.spec { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 7px 14px; margin: 0; }
+dl.spec dt { color: var(--muted); white-space: nowrap; }
+dl.spec dd { margin: 0; font-variant-numeric: tabular-nums; }
+.num { font-family: var(--font-data); font-size: 13px; }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.fig { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.fig b { display: block; font: 500 20px var(--font-data); direction: ltr; text-align: right; }
+.fig span { color: var(--muted); font-size: 13px; }
+.notes { margin: 0; padding-inline-start: 18px; display: grid; gap: 6px; max-width: 75ch; }
+.foot { color: var(--muted); font-size: 13px; }
+.foot code { font-family: var(--font-data); font-size: 12px; direction: ltr; unicode-bidi: embed; }
+.err { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; color: var(--muted); }
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1 id="title">קארט חשמלי בינוני</h1>
+      <p class="sub" id="subtitle">שלדה, כיסוי אווירודינמי, שני מנועים, סוללות בתאים הצדדיים, לוח בקרה והיגוי אקרמן</p>
+    </div>
+    <div class="seg" role="group" aria-label="בחירת דגם">
+      <button id="btn-kart" type="button" aria-pressed="true">קארט</button>
+      <button id="btn-chair" type="button" aria-pressed="false">כיסא גלגלים מהיר</button>
+    </div>
+  </header>
+
+  <div class="bench">
+    <div class="stage" id="stage">
+      <div class="overlay"><span class="dims" id="dims">…</span></div>
+      <div class="views" role="group" aria-label="זווית מבט">
+        <button type="button" data-view="iso">איזומטרי</button>
+        <button type="button" data-view="side">צד</button>
+        <button type="button" data-view="front">חזית</button>
+        <button type="button" data-view="top">מלמעלה</button>
+        <button type="button" data-view="rear">אחור</button>
+      </div>
+    </div>
+
+    <aside class="rail">
+      <section class="card">
+        <h2>חלקים</h2>
+        <div class="parts" id="parts"></div>
+        <label class="opt"><input type="checkbox" id="xray"> <span id="xray-label">כיסוי שקוף</span></label>
+      </section>
+      <section class="card">
+        <h2>מפרט</h2>
+        <dl class="spec" id="spec"></dl>
+      </section>
+    </aside>
+  </div>
+
+  <section class="figs" id="figs" aria-label="מספרים עיקריים"></section>
+
+  <section class="card">
+    <h2>החלטות תכנון</h2>
+    <ul class="notes" id="notes"></ul>
+  </section>
+
+  <p class="foot">מודלי קונספט פרמטריים (מ״מ). קובצי STL לכל חלק ו-GLB להרכבה נמצאים במאגר בתיקייה <code>exports/</code>; הקוד ב-<code>models/</code>; החישובים ב-<code>scripts/calc.mjs</code>. המספרים הם הערכות תכנון ראשוניות, לא תחליף לחישובי חוזק ובדיקות.</p>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { buildGoKart } from './models/gokart.js';
+import { buildWheelchair } from './models/wheelchair.js';
+
+const INFO = {
+  kart: {
+    title: 'קארט חשמלי בינוני',
+    subtitle: 'שלדה, כיסוי אווירודינמי, שני מנועים, סוללות בתאים הצדדיים, לוח בקרה והיגוי אקרמן',
+    xray: 'כיסוי שקוף', xrayPart: 'body',
+    spec: [
+      ['שלדה', 'צינור כרום-מולי 4130 Ø30×2, מסגרת רציפה מכופפת'],
+      ['בסיס גלגלים', '<span class="num">1050</span> מ״מ'],
+      ['מפשק', '<span class="num">980</span> קדמי / <span class="num">1120</span> אחורי'],
+      ['גלגלים', '10×4.50-5 קדמי, 11×7.10-5 אחורי'],
+      ['מנועים', '2 × PMSM 72V, 5 kW רציף / 12 kW שיא'],
+      ['העברה', 'שרשרת #219, 11:32, סרן חי Ø40'],
+      ['סוללה', '2 × 10S8P (21700) → 72V 36Ah, 2.6 kWh'],
+      ['לוח בקרה', '2 בקרי FOC, VCU, BMS, מגען, DC-DC 12V'],
+      ['היגוי', 'אקרמן 19.4°, קסטור 12°, KPI 10°, הגה Ø300 עם צג'],
+      ['בלמים', 'דיסק Ø180 מאוורר אחורי + בלימה רגנרטיבית'],
+    ],
+    figs: [
+      ['91 km/h', 'מהירות מרבית (מוגבלת בהעברה)'],
+      ['≈2.0 s', '0–60 קמ״ש, תיאורטי'],
+      ['38 / 62 %', 'חלוקת משקל קדמי / אחורי'],
+      ['172 kg', 'משקל כולל עם נהג 80 ק״ג'],
+      ['0.45 m²', 'CdA משוער עם כיסוי (0.55 בלי)'],
+      ['19–52 min', 'זמן נסיעה: מירוץ / פנאי'],
+    ],
+    notes: [
+      'האף נמוך ורחב, ומכסה כ-70% מפני הגלגלים הקדמיים. הגלגלים החשופים הם מקור גרר גדול בקארט.',
+      'התאים הצדדיים סוגרים את הרווח בין הגלגל הקדמי לאחורי. הם גם מכילים את חבילות הסוללה, כך שהמסה נמוכה ובין הסרנים.',
+      'פתחי אוויר על גג התאים מקררים את הסוללות, ופגוש אחורי סוגר את השובל שמאחורי הגלגלים.',
+      'לוח המחוונים הקדמי מעל השוקיים מטה את האוויר מעל הידיים והגוף. לפי ההערכה, ב-90 קמ״ש הכיסוי חוסך כ-1 kW (5.4 במקום 6.4 kW).',
+      'שני המנועים יושבים משני צדי המושב, לפני הסרן, כמו מנוע בקארט רגיל. כך חלוקת המשקל נשארת 38/62.',
+      'לוח הבקרה נמצא בתיבה מאחורי המושב, מעל הסרן: קצר לכבלים, מוגן ומקורר מזרימת האוויר האחורית.',
+      'היגוי אקרמן: זרועות ההיגוי מכוונות למרכז הסרן האחורי. קסטור 12° ו-KPI 10° מחזירים את ההגה למרכז ומרימים את הגלגל הפנימי בפנייה, כמו בקארט עם סרן חי.',
+    ],
+  },
+  chair: {
+    title: 'כיסא גלגלים חשמלי מהיר',
+    subtitle: 'גלגלי 29 בסגנון אופני הרים, מנועי רכזת, בלמי דיסק, מושב על מתלה ושלדה רחבה ונמוכה',
+    xray: 'מושב שקוף', xrayPart: 'seat',
+    spec: [
+      ['שלדה', 'אלומיניום 6061-T6, צינורות Ø30 / Ø25, משולש אחורי בסגנון אופניים'],
+      ['גלגלים', '29×2.4 (ETRTO 622), 36 חישורים, שזירה 1-cross'],
+      ['מנועים', '2 × מנוע רכזת DD 72V, 2 kW רציף / 4 kW שיא, ~100 Nm'],
+      ['בלמים', 'דיסק הידראולי Ø203, קליפר 4 בוכנות, ידית אחת עם מפצל'],
+      ['סוללה', '20S6P (21700) → 72V 27Ah, 1.94 kWh, מתחת למושב'],
+      ['מפשק', '<span class="num">756</span> מ״מ (אחורי, עם קמבר 2°) / <span class="num">740</span> קדמי'],
+      ['גלגלי היגוי', '10″ פנאומטיים, מזלג עם קפיץ, trail 55 מ״מ'],
+      ['נוחות', 'מושב על ציר ובולם, כרית 70 מ״מ, תמיכה מותנית, משענת ראש'],
+      ['שליטה', 'ג׳ויסטיק + צג בצד ימין, ידית בלם בצד שמאל'],
+      ['בקרה', '2 בקרי FOC, VCU עם IMU (בקרת התהפכות והרמת חזית)'],
+    ],
+    figs: [
+      ['40 km/h', 'מהירות מרבית (מוגבלת בתוכנה)'],
+      ['≈7.6 s', '0–40 קמ״ש, מוגבל ביציבות'],
+      ['32°', 'זווית התהפכות צידית סטטית'],
+      ['0.35 g', 'מגבלת תאוצה צידית בבקר'],
+      ['150 kg', 'משקל כולל עם רוכב 85 ק״ג'],
+      ['~90 km', 'טווח ב-40 קמ״ש קבוע, כביש שטוח'],
+    ],
+    notes: [
+      'גלגלי 29 עם צמיג 2.4 בלחץ נמוך עוברים מכשולים בקלות ובולעים רעידות. הצמיג עצמו עובד כמתלה ראשון.',
+      'מנוע רכזת DD בכל גלגל, בלי שרשרת או תמסורת. ההיגוי דיפרנציאלי (טנק), והבקר מגביל קצב סיבוב לפי מהירות.',
+      'מנוע רכזת צריך תפיסה משני צדי הציר, ולכן לכל גלגל יש משולש חיצוני כמו באופניים. הצינורות עוברים מחוץ לצמיג ולחישורים.',
+      'דיסק Ø203 בצד הפנימי. ידית אחת מפעילה את שני הקליפרים דרך מפצל, כדי שבלימה לא תסובב את הכיסא. בלימה רגנרטיבית מהג׳ויסטיק מוסיפה עוד.',
+      'יציבות: מפשק רחב, סוללה נמוכה ולפני הציר, וגלגלי אנטי-טיפ מאחור. ה-IMU מגביל תאוצה ל-0.17g (סף הרמת חזית 0.20g) ותאוצה צידית ל-0.35g (התהפכות ב-0.63g).',
+      'נוחות: כל מודול המושב יושב על ציר קדמי ובולם קפיץ-שמן (בידוד רעידות), ומזלגות גלגלי ההיגוי עם קפיץ. בנוסף כרית מעוצבת, משענת עם תמיכה מותנית ומשענת ראש.',
+      'מגני פוליקרבונט בין הגלגל לרוכב מונעים מגע של היד בחישורים במהירות. רתמת 4 נקודות.',
+      'רוחב כ-90 ס״מ: מעבר לרוחב דלת רגילה. זה כלי לשטח ולספורט, לא כיסא לשימוש יומיומי בבית.',
+    ],
+  },
+};
+
+const stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+stage.prepend(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(35, 1, 10, 60000);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.maxPolarAngle = Math.PI * 0.495;
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8899aa, 1.4));
+const sun = new THREE.DirectionalLight(0xffffff, 2.4);
+sun.position.set(1800, 3200, 1400);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -1600, right: 1600, top: 1600, bottom: -1600, near: 100, far: 8000 });
+sun.shadow.bias = -0.0004;
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffffff, 0.6);
+fill.position.set(-2000, 1200, -1500);
+scene.add(fill);
+
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(8000, 8000), new THREE.ShadowMaterial({ opacity: 0.22 }));
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+let grid;
+
+function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function applyTheme() {
+  scene.background = new THREE.Color(css('--scene'));
+  if (grid) { scene.remove(grid); grid.geometry.dispose(); }
+  grid = new THREE.GridHelper(4000, 40, new THREE.Color(css('--grid-major')), new THREE.Color(css('--grid')));
+  grid.position.y = 0.5;
+  scene.add(grid);
+}
+applyTheme();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+// Build both models once; each part gets its own material copies so x-ray only affects that part.
+function prepare(build) {
+  const { root, parts } = build();
+  const wrap = new THREE.Group();
+  wrap.rotation.x = -Math.PI / 2; // model is Z-up, three.js is Y-up
+  wrap.add(root);
+  for (const p of parts) {
+    const copies = new Map();
+    p.traverse((o) => {
+      if (!o.isMesh) return;
+      if (!copies.has(o.material)) copies.set(o.material, o.material.clone());
+      o.material = copies.get(o.material);
+      o.castShadow = true;
+      o.receiveShadow = true;
+    });
+    p.userData.mats = [...copies.values()];
+    p.userData.base = p.userData.mats.map((m) => ({ opacity: m.opacity, transparent: m.transparent, depthWrite: m.depthWrite }));
+  }
+  wrap.visible = false;
+  scene.add(wrap);
+  wrap.updateMatrixWorld(true);
+  return { wrap, parts };
+}
+const models = { kart: prepare(buildGoKart), chair: prepare(buildWheelchair) };
+
+let current = null;
+const partsEl = document.getElementById('parts');
+const xray = document.getElementById('xray');
+
+function envelope(m) {
+  const b = new THREE.Box3();
+  for (const p of m.parts) if (p.visible && p.userData.exportable) b.expandByObject(p);
+  return b;
+}
+function setXray(on) {
+  const m = models[current];
+  const target = m.parts.find((p) => p.name === INFO[current].xrayPart);
+  if (!target) return;
+  target.userData.mats.forEach((mat, i) => {
+    const base = target.userData.base[i];
+    mat.transparent = on || base.transparent;
+    mat.opacity = on ? Math.min(base.opacity, 0.22) : base.opacity;
+    mat.depthWrite = on ? false : base.depthWrite;
+    mat.needsUpdate = true;
+  });
+}
+
+function fit(view) {
+  const m = models[current];
+  const box = new THREE.Box3().setFromObject(m.wrap);
+  const c = box.getCenter(new THREE.Vector3());
+  const r = box.getSize(new THREE.Vector3()).length() / 2;
+  const dirs = {
+    iso: [1.05, 0.62, -1.0], side: [0, 0.06, -1], front: [1, 0.12, 0.001], top: [-0.01, 1, 0], rear: [-1, 0.25, -0.35],
+  };
+  const d = new THREE.Vector3(...dirs[view]).normalize();
+  const dist = (r / Math.sin(THREE.MathUtils.degToRad(camera.fov / 2))) * (camera.aspect < 1 ? 1.2 / camera.aspect ** 0.5 : 0.78);
+  camera.position.copy(c).addScaledVector(d, dist);
+  controls.target.copy(c);
+  controls.update();
+}
+
+function select(key) {
+  current = key;
+  for (const [k, m] of Object.entries(models)) m.wrap.visible = k === key;
+  document.getElementById('btn-kart').setAttribute('aria-pressed', String(key === 'kart'));
+  document.getElementById('btn-chair').setAttribute('aria-pressed', String(key === 'chair'));
+  const info = INFO[key];
+  document.getElementById('title').textContent = info.title;
+  document.getElementById('subtitle').textContent = info.subtitle;
+  document.getElementById('xray-label').textContent = info.xray;
+  document.getElementById('spec').innerHTML = info.spec.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+  document.getElementById('figs').innerHTML = info.figs.map(([v, k]) => `<div class="fig"><b>${v}</b><span>${k}</span></div>`).join('');
+  document.getElementById('notes').innerHTML = info.notes.map((n) => `<li>${n}</li>`).join('');
+  partsEl.innerHTML = '';
+  models[key].parts.forEach((p, i) => {
+    let color = '#888';
+    p.traverse((o) => { if (o.isMesh && color === '#888') color = '#' + o.material.color.getHexString(); });
+    const id = `part-${key}-${i}`;
+    const row = document.createElement('label');
+    row.className = 'part';
+    row.innerHTML = `<input type="checkbox" id="${id}" ${p.visible ? 'checked' : ''}><span class="sw" style="background:${color}"></span><span>${p.userData.label}</span>${p.userData.exportable ? '' : '<span class="ref">לייחוס</span>'}`;
+    row.querySelector('input').addEventListener('change', (e) => { p.visible = e.target.checked; updateDims(); });
+    partsEl.append(row);
+  });
+  xray.checked = false;
+  for (const k of Object.keys(models)) { const save = current; current = k; setXray(false); current = save; }
+  updateDims();
+  fit('iso');
+  try { history.replaceState(null, '', '#' + key); } catch {}
+}
+function updateDims() {
+  const s = envelope(models[current]).getSize(new THREE.Vector3());
+  // wrap rotation maps model (x, y, z) → (x, z, -y); report in model terms L × W × H
+  document.getElementById('dims').textContent = `L ${s.x.toFixed(0)} × W ${s.z.toFixed(0)} × H ${s.y.toFixed(0)} mm`;
+}
+
+document.getElementById('btn-kart').addEventListener('click', () => select('kart'));
+document.getElementById('btn-chair').addEventListener('click', () => select('chair'));
+document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => fit(b.dataset.view)));
+xray.addEventListener('change', () => setXray(xray.checked));
+
+function resize() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(stage);
+resize();
+select(location.hash === '#chair' ? 'chair' : 'kart');
+
+renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+window.__viewer = { select, fit, models };
+</script>
